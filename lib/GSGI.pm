@@ -33,7 +33,13 @@ A GSGI application is a Perl code reference. It takes at least one argument, the
     ]
   }
 
-An application MAY take a logger as second argument. A logger is a code reference to log messages. A message MUST be passed as hash reference with at least two keys:
+An application MAY take a hash reference as second argument. The hash reference contains the following keys:
+
+=over
+
+=item logger
+
+a code reference to log messages. A message MUST be passed as hash reference with at least two keys:
 
 =over
 
@@ -44,6 +50,8 @@ One of the strings debug, info, warn, error and fatal.
 =item message
 
 A plain string or a scalar variable that stringifies.
+
+=back
 
 =back
 

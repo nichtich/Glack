@@ -1,0 +1,84 @@
+#!perl
+use strict;
+use App::glack;
+ 
+App::glack->new(@ARGV)->run;
+
+__END__
+
+=head1 NAME
+ 
+glack - Run GSGI application with Plack Gemini server
+ 
+=head1 SYNOPSIS
+
+  glack {OPTIONS} [FILE]
+
+=head1 DESCRIPTION
+
+glack is a command line application to run L<GSGI> applications serving the
+Gemini protocol.
+
+glack assumes you have an C<app.glack> script in your current directory. The
+last statement of C<app.glack> should be a code reference that is a GSGI
+application.
+
+=head1 ARGUMENTS
+
+The first non-option argument is used as a .gsgi file path. You can also set
+this path with C<-a> or C<--app>. If omitted, the default file path is
+C<app.glack> in the current directory.
+
+=head1 OPTIONS
+
+=over
+
+=item -a, --app
+
+Specifies the full path to a C<.glack> script. You may alternately provide this
+path as the first argument to C<glack>.
+
+=item -p, --port
+
+Binds to a TCP port. Defaults to 1965.
+
+=item -o, --host
+
+Binds to a TCP interface. Defaults to undef, which binds to the any interface.
+
+=item -k, --key
+
+TLS Keys file.
+
+=item -c, --cert
+
+TLS Cert file.
+
+=item -n, --nossl
+
+Disable SSL/TLS, so the application is served in plain text for testing.
+
+=item -I
+
+Specifies Perl library include paths, like C<perl>'s -I option. You may add
+multiple paths by using this option multiple times.
+
+=item -r, --reload
+
+Makes glack restart the server whenever a file in your development directory
+changes. This option by default watches the C<lib> directory and the base
+directory where I<.glack> file is located. Use C<-R> to watch other
+directories.
+
+=item -R, --Reload
+
+Makes plackup restart the server whenever a file in any of the given
+directories changes. Take a comma-separated list of paths.
+
+=back
+
+=head1 SEE ALSO
+
+Implemented in L<App::glack>. Inspired by L<plackup>.
+
+=cut

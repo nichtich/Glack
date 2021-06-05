@@ -1,7 +1,7 @@
 package Glack::Logger;
 use v5.14.1;
 use Carp;
-use Scalar::Utils qw(reftype);
+use Scalar::Util qw(reftype);
 
 my %levels = (
     debug => 0,
@@ -12,41 +12,53 @@ my %levels = (
 );
 
 sub new {
-    my ( $class, $code, $min ) = @_;
+    my ( $class, $logger, $min ) = @_;
 
-    croak 'Logger must be a code reference' unless reftype $logger eq 'CODE';
+    $logger ||= sub {
+        my $level   = uc $_[0]->{level};
+        my $message = $_[0]->{message};
+        say STDERR "$level: $message";
+    };
+
+    croak 'Logger must be a logger reference' unless reftype $logger eq 'CODE';
     croak 'Level must be debug|info|warn|error|fatal'
       if $min and !exists $levels{$min};
 
     bless {
-        code => $code,
-        min  => $levels{ $min || 'debug' },
+        logger => $logger,
+        min    => $levels{ $min || 'debug' },
     }, $class;
 }
 
 sub debug {
-    $_->[0]->{code}->( debug => $_[1] ) if $_->[0]{min} <= 0;
+    $_[0]->{logger}->( { level => 'debug', message => $_[1] } )
+      if $_->[0]{min} <= 0;
 }
 
 sub info {
-    $_->[0]->{code}->( info => $_[1] ) if $_->[0]{min} <= 1;
+    $_[0]->{logger}->( { level => 'info', message => $_[1] } )
+      if $_->[0]{min} <= 1;
 }
 
 sub warn {
-    $_->[0]->{code}->( warn => $_[1] ) if $_->[0]{min} <= 2;
+    $_[0]->{logger}->( { level => 'warn', message => $_[1] } )
+      if $_->[0]{min} <= 2;
 }
 
 sub error {
-    $_->[0]->{code}->( error => $_[1] ) if $_->[0]{min} <= 3;
+    $_[0]->{logger}->( { level => 'error', message => $_[1] } )
+      if $_->[0]{min} <= 3;
 }
 
 sub fatal {
-    $_->[0]->{code}->( fatal => $_[1] );
-}
-
-sub code {
-    my ($self) = @_;
-    return $self->{code};
+    $_[0]->{logger}->( { level => 'fatal', message => $_[1] } );
 }
 
 1;
+__END__
+
+=head1 NAME
+
+Glack::Logger - Utility class for logging
+
+=cut
