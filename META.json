@@ -1,12 +1,12 @@
 {
-   "abstract" : "Gemini server implementation",
+   "abstract" : "Implementation of glack command line application",
    "author" : [
       "-"
    ],
    "dynamic_config" : 0,
    "generated_by" : "Minilla/v3.1.7, CPAN::Meta::Converter version 2.150001",
    "license" : [
-      "unknown"
+      "perl_5"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
@@ -42,6 +42,7 @@
       },
       "runtime" : {
          "requires" : {
+            "IO::Socket::SSL" : "0",
             "perl" : "v5.14.1"
          }
       },
@@ -65,5 +66,8 @@
    },
    "version" : "0.01",
    "x_authority" : "cpan:VOJ",
+   "x_contributors" : [
+      "Jakob Voss <voss@gbv.de>"
+   ],
    "x_static_install" : 1
 }

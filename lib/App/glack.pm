@@ -3,6 +3,8 @@ use 5.14.1;
 use File::Spec ();
 use Glack::Server;
 
+our $VERSION = "0.01";
+
 sub new {
     my $class = shift;
 
@@ -19,7 +21,6 @@ sub new {
         'reload|r',     'Reload|R=s', 'help|h',   'version|v',
     );
 
-# TODO: cert file, -k|--insecure,-n|nossl
 # TODO: if reload/Reload
 #   => sub { $self->{loader} = "Restarter" },
 #   => sub { $self->{loader} = "Restarter"; $self->loader->watch(split ",", $_[1]) },
@@ -103,10 +104,21 @@ __END__
 
 App::glack - Implementation of glack command line application
 
+=head1 SYNOPSIS
+
+  use App::glack
+  App::glack->new(@ARGV)->run;
+
 =head1 SEE ALSO
 
-See L<glack> for options.
+See L<glack> for command line options.
 
-Code derived from L<Plack::Runner> and L<Plack::Util>.
+Source code has been derived from L<Plack::Runner> and L<Plack::Util> by Tatsuhiko Miyagawa.
+
+=head1 LICENSE
+
+Copyright Jakob Voss, 2021-
+
+This library is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 
 =cut

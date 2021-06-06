@@ -1,24 +1,15 @@
 # NAME
 
-Glack - Gemini server implementation
-
-# DESCRIPTION
-
-Gemini server implementation based on [GSGI](https://metacpan.org/pod/GSGI).
-
-# MODULES
-
-- [App::glackup](https://metacpan.org/pod/App::glackup)
-- [Glack::Logger](https://metacpan.org/pod/Glack::Logger)
+App::glack - Implementation of glack command line application
 
 # SEE ALSO
 
-The name Glack is a reference to [Plack](https://metacpan.org/pod/Plack) but it also means "narrow valley" in Scottish.
+See [glack](https://metacpan.org/pod/glack) for options.
 
-See [App::phoebe](https://metacpan.org/pod/App::phoebe) for another Gemini server.
+Code derived from [Plack::Runner](https://metacpan.org/pod/Plack::Runner) and [Plack::Util](https://metacpan.org/pod/Plack::Util).
 
 # LICENSE
 
 Copyright Jakob Voss, 2021-
 
-GNU Affero General Public License.
+This library is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
