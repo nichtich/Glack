@@ -8,7 +8,7 @@ our $VERSION = "0.01";
 sub new {
     my $class = shift;
 
-    my $self = {};
+    my %self;
 
     # -Ipath => -I path
     local @ARGV = map { /^-I(.+)/ ? ( '-I', $1 ) : $_ } @ARGV;
@@ -16,18 +16,18 @@ sub new {
     require Getopt::Long;
     my $parser = Getopt::Long::Parser->new( config => ["no_ignore_case"] );
     $parser->getoptions(
-        $self,          'app|a=s',    'port|p=i', 'host|o=s',
-        'include|I=s@', 'key|l=s',    'cert|c=s', 'nossl|n',
-        'reload|r',     'Reload|R=s', 'help|h',   'version|v',
+        \%self,         'app|a=s',  'port|p=i',   'host|o=s',
+        'include|I=s@', 'key|l=s',  'cert|c=s',   'nossl|n',
+        'generate|g',   'reload|r', 'Reload|R=s', 'help|h',
+        'version|v',
     );
 
-# TODO: if reload/Reload
-#   => sub { $self->{loader} = "Restarter" },
-#   => sub { $self->{loader} = "Restarter"; $self->loader->watch(split ",", $_[1]) },
+    # $self->{reload} = "Restarter" if $self->{reload} or $self->{Reload};
+    # $self->{reload}->watch(split ",", $self->{Reload}) if $self->{Reload};
 
-    $self->{app} ||= $ARGV[0];
+    $self{app} ||= $ARGV[0];
 
-    bless $self, $class;
+    bless \%self, $class;
 }
 
 sub load_app {
@@ -90,10 +90,37 @@ sub run {
         exit;
     }
 
+    unless ( $self->{nossl} ) {
+        $self->{key}  ||= "key.pem";
+        $self->{cert} ||= "cert.pem";
+
+        my @missing = grep { !-f $self->{$_} } qw(key cert);
+        if ( $self->{generate} ) {
+            die "Better not overwrite existing certificate and/or key file\n"
+              if @missing ne 2;
+            $self->{host} ||= "localhost";
+            say "Generating certificate and key file, valid for 30 days...";
+            my @cmd = (
+                qw(openssl req -new -x509 -newkey ec -subj),
+                "/CN={$self->{host}",
+                qw(-pkeyopt ec_paramgen_curve:prime256v1),
+                qw(-days 30 -nodes -out),
+                $self->{cert},
+                '-keyout',
+                $self->{key}
+            );
+            say join " ", @cmd;
+            system(@cmd) == 0 or die "openssl failed: $?";
+        }
+        elsif (@missing) {
+            @missing = map { $self->{$_} . " not found!\n" } @missing;
+            die join '', @missing, "You may want to try option -h, -n, or -g\n";
+        }
+    }
+
     my $app = $self->load_app( @_ ? @_ : $self->{app} );
 
-    # TODO: cert/key/ssl
-    my $server = Glack::Server->new;
+    my $server = Glack::Server->new(%$self);
     $server->run($app);
 }
 

@@ -37,6 +37,20 @@ Glack is a set of tools for using the Gemini protocol. The tools are connected b
 
 =back
 
+=head1 GETTING STARTED
+
+  # create application
+  echo 'sub { [20, "text/gemini", ["# Greeting", "Hello, World"]] }' > app.glack
+
+  # create certificate and key files
+  glack -g
+
+  # start server
+  glack
+
+  # perform request (in another terminal)
+  echo "some:uri" | ncat --ssl localhost 1965
+
 =head1 SEE ALSO
 
 The name Glack is a reference to L<Plack> but it also means "narrow valley" in Scottish.
